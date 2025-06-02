@@ -10,3 +10,4 @@ yarn-debug.log*
 .DS_Store
 # Build output (if any)
 dist/
+vercel.json
