@@ -24,7 +24,8 @@ function Checkout() {
     }
 
     async function handleSubscription(e) {
-        e.preventDefault();
+        try {
+             e.preventDefault();
         // if(!razorpayKey || !subscription_id) {
         //     toast.error("Something went wrong");
         //     return;
@@ -49,6 +50,7 @@ function Checkout() {
                 name: userData.fullName,
             },
             
+            
             handler: async function (response) {
                 paymentDetails.razorpay_payment_id = response.razorpay_payment_id;
                 paymentDetails.razorpay_signature = response.razorpay_signature;
@@ -63,19 +65,34 @@ function Checkout() {
                 isPaymentVerified ? navigate("/checkout/success") : navigate("/checkout/fail");
                 // res?.payload?.success ? navigate("/checkout/success") : navigate("/checkout/fail");
             }
+            
         }
         const paymentObject = new window.Razorpay(options);
         paymentObject.open();
+    
+            
+        } catch (error) {
+            
+        console.error("Error during payment:", error);
+        }
     }
+       
 
     async function load() {
         await dispatch(getRazorPayId());
         await dispatch(purchaseCourseBundle());
     }
 
+    // useEffect(() => {
+    //     load();
+    // }, []);
+
     useEffect(() => {
-        load();
-    }, []);
+    load().then(() => {
+        console.log("razorpayKey:", razorpayKey);
+        console.log("order_id:", order_id);
+    });
+}, []);
 
     return (
    

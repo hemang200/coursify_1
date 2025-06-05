@@ -12,12 +12,14 @@ const initialState = {
     monthlySalesRecord: []
 }
 
+
 export const getRazorPayId = createAsyncThunk("/razorpay/getId", async () => {
     try {
         const response = await axiosInstance.get("/payments/razorpay-key");
         return response.data;
     } catch(error) {
         toast.error("Failed to load data");
+          throw error; 
     }
 })
 
@@ -25,10 +27,12 @@ export const getRazorPayId = createAsyncThunk("/razorpay/getId", async () => {
 export const purchaseCourseBundle = createAsyncThunk("/purchaseCourse", async () => {
     try {
         const response = await axiosInstance.post("/payments/subscribe");
-        console.log(response)
+       console.log("Order ID from backend:", response.data?.order?.id);
+
         return response.data;
     } catch(error) {
-        toast.error(error?.response?.data?.message);
+        toast.error(error?.response?.data?.message || "Purchase failed");
+        throw error;
     }
 });
 
@@ -89,7 +93,7 @@ const razorpaySlice = createSlice({
         })
         .addCase(purchaseCourseBundle.fulfilled, (state, action) => {
             // state.subscription_id = action?.payload?.subscription_id;
-            state.order_id = action?.payload?.order_id;
+            state.order_id = action?.payload?.order?.id;
 
         })
         .addCase(verifyUserPayment.fulfilled, (state, action) => {
