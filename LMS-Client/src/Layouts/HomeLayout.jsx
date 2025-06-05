@@ -230,17 +230,6 @@ function HomeLayout() {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
     );
 }
 

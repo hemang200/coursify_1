@@ -12,24 +12,33 @@ function Checkout() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const razorpayKey = useSelector((state) => state?.razorpay?.key);
-    const subscription_id = useSelector((state) => state?.razorpay?.subscription_id);
+    // const subscription_id = useSelector((state) => state?.razorpay?.subscription_id);
+    const order_id = useSelector((state) => state?.razorpay?.order_id);
+
     const isPaymentVerified = useSelector((state) => state?.razorpay?.isPaymentVerified);
     const userData = useSelector((state) => state?.auth?.data);
     const paymentDetails = {
         razorpay_payment_id: "",
-        razorpay_subscription_id: "",
+        razorpay_order_id: "",
         razorpay_signature: ""
     }
 
     async function handleSubscription(e) {
         e.preventDefault();
-        if(!razorpayKey || !subscription_id) {
-            toast.error("Something went wrong");
-            return;
-        }
+        // if(!razorpayKey || !subscription_id) {
+        //     toast.error("Something went wrong");
+        //     return;
+        // }
+
+        if (!razorpayKey || !order_id) {
+       toast.error("Something went wrong");
+       return;
+      }
+
         const options = {
             key: razorpayKey,
-            subscription_id: subscription_id,
+            // subscription_id: subscription_id,
+               order_id: order_id,
             name: "Coursify Pvt. Ltd.",
             description: "Subscription",
             theme: {
@@ -43,7 +52,9 @@ function Checkout() {
             handler: async function (response) {
                 paymentDetails.razorpay_payment_id = response.razorpay_payment_id;
                 paymentDetails.razorpay_signature = response.razorpay_signature;
-                paymentDetails.razorpay_subscription_id = response.razorpay_subscription_id;
+                // paymentDetails.razorpay_subscription_id = response.razorpay_subscription_id;
+                paymentDetails.razorpay_order_id = response.razorpay_order_id;
+
 
                 toast.success("Payment successfull");
 
