@@ -10,7 +10,7 @@ router
 
 router
     .route("/subscribe")
-    .post(isLoggedIn, buySubscription);
+    .get(isLoggedIn, buySubscription);
 
 router
     .route("/verify")

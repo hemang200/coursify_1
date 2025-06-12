@@ -62,8 +62,8 @@ function Checkout() {
 
                 const res = await dispatch(verifyUserPayment(paymentDetails));
                 console.log(res);
-                isPaymentVerified ? navigate("/checkout/success") : navigate("/checkout/fail");
-                // res?.payload?.success ? navigate("/checkout/success") : navigate("/checkout/fail");
+                // isPaymentVerified ? navigate("/checkout/success") : navigate("/checkout/fail");
+                res?.payload?.success ? navigate("/checkout/success") : navigate("/checkout/fail");
             }
             
         }
