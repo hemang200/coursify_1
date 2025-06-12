@@ -66,37 +66,7 @@ export const logout = createAsyncThunk("/auth/logout", async () => {
     }
 });
 
-const authSlice = createSlice({
-    name: "auth",
-    initialState,
-    reducers: {},
-    extraReducers: (builder) => {
-        builder
-        .addCase(login.fulfilled, (state, action) => {
-            localStorage.setItem("data", JSON.stringify(action?.payload?.user));
-            localStorage.setItem("isLoggedIn", true);
-            localStorage.setItem("role", action?.payload?.user?.role);
-            state.isLoggedIn = true;
-            state.data = action?.payload?.user;
-            state.role = action?.payload?.user?.role
-        })
-        .addCase(logout.fulfilled, (state) => {
-            localStorage.clear();
-            state.data = {};
-            state.isLoggedIn = false;
-            state.role = "";
-        })
-        .addCase(getUserData.fulfilled, (state, action) => {
-            if(!action?.payload?.user) return;
-            localStorage.setItem("data", JSON.stringify(action?.payload?.user));
-            localStorage.setItem("isLoggedIn", true);
-            localStorage.setItem("role", action?.payload?.user?.role);
-            state.isLoggedIn = true;
-            state.data = action?.payload?.user;
-            state.role = action?.payload?.user?.role
-        });
-    }
-});
+
 
 export const getUserData = createAsyncThunk("/user/details", async () => {
     try {
@@ -122,4 +92,63 @@ export const updateProfile = createAsyncThunk("/user/update/profile", async (dat
         toast.error(error?.response?.data?.message);
     }
 })
+
+// Action to update subscription status after successful payment
+export const updateSubscriptionStatus = createAsyncThunk("/auth/updateSubscription", async (subscriptionData) => {
+    try {
+        // This will refetch user data to get updated subscription status
+        const res = await axiosInstance.get("user/me");
+        return res.data;
+    } catch(error) {
+        console.error("Error updating subscription status:", error);
+        throw error;
+    }
+});
+
+const authSlice = createSlice({
+    name: "auth",
+    initialState,
+    reducers: {// Manual action to update subscription status
+        setSubscriptionStatus: (state, action) => {
+            if (state.data) {
+                state.data.subscription = action.payload;
+                localStorage.setItem("data", JSON.stringify(state.data));
+            }
+        }
+    },
+    extraReducers: (builder) => {
+        builder
+        .addCase(login.fulfilled, (state, action) => {
+            localStorage.setItem("data", JSON.stringify(action?.payload?.user));
+            localStorage.setItem("isLoggedIn", true);
+            localStorage.setItem("role", action?.payload?.user?.role);
+            state.isLoggedIn = true;
+            state.data = action?.payload?.user;
+            state.role = action?.payload?.user?.role
+        })
+        .addCase(logout.fulfilled, (state) => {
+            localStorage.clear();
+            state.data = {};
+            state.isLoggedIn = false;
+            state.role = "";
+        })
+        .addCase(getUserData.fulfilled, (state, action) => {
+            if(!action?.payload?.user) return;
+            localStorage.setItem("data", JSON.stringify(action?.payload?.user));
+            localStorage.setItem("isLoggedIn", true);
+            localStorage.setItem("role", action?.payload?.user?.role);
+            state.isLoggedIn = true;
+            state.data = action?.payload?.user;
+            state.role = action?.payload?.user?.role
+        })
+        .addCase(updateSubscriptionStatus.fulfilled, (state, action) => {
+            if(!action?.payload?.user) return;
+            localStorage.setItem("data", JSON.stringify(action?.payload?.user));
+            state.data = action?.payload?.user;
+            console.log("Subscription status updated:", action?.payload?.user?.subscription);
+        })
+    }
+})
+
+export const { setSubscriptionStatus  } = authSlice.actions;
 export default authSlice.reducer;

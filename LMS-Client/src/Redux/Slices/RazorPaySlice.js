@@ -44,9 +44,20 @@ export const verifyUserPayment = createAsyncThunk("/payments/verify", async (dat
             // razorpay_subscription_id: data.razorpay_subscription_id,
             razorpay_signature: data.razorpay_signature
         });
+
+        // If payment is successful, update user data to reflect subscription
+        if (response.data.success) {
+            // Import getUserData from AuthSlice to refresh user data
+            const { getUserData } = await import('./AuthSlice');
+            dispatch(getUserData());
+        }
+        toast.success(response.data.message);
+        console.log("Payment verification response:", response.data);
+
         return response.data;
     } catch(error) {
         toast.error(error?.response?.data?.message);
+        throw error;
     }
 });
 
@@ -76,6 +87,11 @@ export const cancelCourseBundle = createAsyncThunk("/payments/cancel", async () 
             },
             error: "Failed to ubsubscribe"
         })
+
+        // Refresh user data after cancellation
+        const { getUserData } = await import('./AuthSlice');
+        dispatch(getUserData());
+
         return (await response).data;
     } catch(error) {
         toast.error(error?.response?.data?.message);
@@ -85,7 +101,12 @@ export const cancelCourseBundle = createAsyncThunk("/payments/cancel", async () 
 const razorpaySlice = createSlice({
     name: "razorpay",
     initialState,
-    reducers: {},
+    reducers: {
+        resetPaymentState: (state) => {
+            state.isPaymentVerified = false;
+            state.order_id = "";
+        }
+    },
     extraReducers: (builder) => {
         builder
         .addCase(getRazorPayId.fulfilled, (state, action) =>{
@@ -115,4 +136,5 @@ const razorpaySlice = createSlice({
     }
 });
 
+export const { resetPaymentState } = razorpaySlice.actions;
 export default razorpaySlice.reducer;

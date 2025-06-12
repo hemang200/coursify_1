@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 import HomeLayout from '../../Layouts/HomeLayout';
 import { getRazorPayId, purchaseCourseBundle, verifyUserPayment } from "../../Redux/Slices/RazorPaySlice";
+import { getUserData } from "../../Redux/Slices/AuthSlice";
 
 function Checkout() {
     // const user = useSelector((state) => state.auth.data);
@@ -17,6 +18,13 @@ function Checkout() {
 
     const isPaymentVerified = useSelector((state) => state?.razorpay?.isPaymentVerified);
     const userData = useSelector((state) => state?.auth?.data);
+    const { role } = useSelector((state) => state.auth);
+    
+    // Check if user is already subscribed
+    const isSubscribed = userData?.subscription?.status === 'ACTIVE' || 
+                        userData?.subscription?.status === 'active' ||
+                        role === 'admin';
+
     const paymentDetails = {
         razorpay_payment_id: "",
         razorpay_order_id: "",
@@ -26,10 +34,6 @@ function Checkout() {
     async function handleSubscription(e) {
         try {
              e.preventDefault();
-        // if(!razorpayKey || !subscription_id) {
-        //     toast.error("Something went wrong");
-        //     return;
-        // }
 
         if (!razorpayKey || !order_id) {
        toast.error("Something went wrong");
@@ -40,6 +44,8 @@ function Checkout() {
             key: razorpayKey,
             // subscription_id: subscription_id,
                order_id: order_id,
+               amount: 50000, // INR 500 in paise
+                currency: "INR",
             name: "Coursify Pvt. Ltd.",
             description: "Subscription",
             theme: {
@@ -58,41 +64,92 @@ function Checkout() {
                 paymentDetails.razorpay_order_id = response.razorpay_order_id;
 
 
-                toast.success("Payment successfull");
+                console.log("Payment response:", response);
 
-                const res = await dispatch(verifyUserPayment(paymentDetails));
-                console.log(res);
-                // isPaymentVerified ? navigate("/checkout/success") : navigate("/checkout/fail");
-                res?.payload?.success ? navigate("/checkout/success") : navigate("/checkout/fail");
-            }
+                    const res = await dispatch(verifyUserPayment(paymentDetails));
+                    console.log("Verification response:", res);
+                    
+                    if (res?.payload?.success) {
+                        // Refresh user data to get updated subscription status
+                        await dispatch(getUserData());
+                        toast.success("Payment successful! You now have access to all courses.");
+                        navigate("/checkout/success");
+                    } else {
+                        navigate("/checkout/fail");
+                    }
             
+        },
+       modal: {
+                    ondismiss: function() {
+                        toast.error("Payment cancelled");
+                    }
+                }
         }
-        const paymentObject = new window.Razorpay(options);
-        paymentObject.open();
-    
             
+            const paymentObject = new window.Razorpay(options);
+            paymentObject.open();
         } catch (error) {
-            
-        console.error("Error during payment:", error);
+            console.error("Error during payment:", error);
+            toast.error("Payment failed. Please try again.");
         }
     }
        
 
     async function load() {
-        await dispatch(getRazorPayId());
-        await dispatch(purchaseCourseBundle());
+        try {
+            await dispatch(getRazorPayId());
+            await dispatch(purchaseCourseBundle());
+        } catch (error) {
+            console.error("Failed to load payment data:", error);
+            toast.error("Failed to initialize payment");
+        }
     }
 
     // useEffect(() => {
     //     load();
     // }, []);
 
-    useEffect(() => {
-    load().then(() => {
-        console.log("razorpayKey:", razorpayKey);
-        console.log("order_id:", order_id);
-    });
-}, []);
+   useEffect(() => {
+        // Reset payment state when component mounts
+        // dispatch(resetPaymentState());
+        
+        // If user is already subscribed, redirect to courses
+        if (isSubscribed) {
+            toast.success("You already have an active subscription!");
+            navigate("/courses");
+            return;
+        }
+
+        load().then(() => {
+            console.log("razorpayKey:", razorpayKey);
+            console.log("order_id:", order_id);
+        });
+    }, []);
+
+    // If already subscribed, show message
+    if (isSubscribed) {
+        return (
+            <HomeLayout>
+                <div className="min-h-[90vh] flex items-center justify-center text-white">
+                    <div className="text-center space-y-4">
+                        <div className="text-3xl font-bold text-green-500">
+                            ✅ Already Subscribed!
+                        </div>
+                        <div className="text-xl text-gray-300">
+                            You already have access to all courses
+                        </div>
+                        <button 
+                            onClick={() => navigate("/courses")}
+                            className="bg-yellow-500 hover:bg-yellow-600 transition-all ease-in-out duration-300 px-6 py-3 rounded-lg text-xl font-bold text-black"
+                        >
+                            Browse Courses
+                        </button>
+                    </div>
+                </div>
+            </HomeLayout>
+        );
+    }
+
 
     return (
    

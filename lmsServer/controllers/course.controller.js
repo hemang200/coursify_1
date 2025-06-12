@@ -18,14 +18,14 @@ const getAllCourses = async function (req, res, next) {
     
 }
 
-const getLecturesByCourseId = async function (req, res) {
+const getLecturesByCourseId = async function (req, res, next) {
     try {
          const { id } = req.params;
          console.log(`Fetching lectures for course ID: ${id}`);
          
         const course = await Course.findById(id);
 
-        log(`Course found: ${course ? course.title : 'not found'}`);
+        console.log(`Course found: ${course ? course.title : 'not found'}`);
 
         if (!course) {
             return next(new AppError("Course not found", 404));
