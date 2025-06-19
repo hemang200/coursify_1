@@ -214,10 +214,20 @@ const addLectureToCourseById = async (req, res, next) => {
                 //         lectureData.lecture.secure_url = result.secure_url;
                 // }
 
-                if (result) {
-            lectureData.lecture = { public_id: result.public_id };
-            lectureData.secure_url = result.secure_url;
-        }
+        //         if (result) {
+        //     lectureData.lecture = { public_id: result.public_id };
+        //     lectureData.secure_url = result.secure_url;
+            
+            
+        // }
+
+        if (result) {
+    lectureData.lecture = {
+        public_id: result.public_id,
+        secure_url: result.secure_url,
+    };
+}
+
 
                 // Remove the file after upload
                 await fs.rm(`uploads/${req.file.filename}`);

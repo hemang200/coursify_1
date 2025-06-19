@@ -7,6 +7,8 @@ import { useNavigate } from "react-router-dom";
 import HomeLayout from '../../Layouts/HomeLayout';
 import { getRazorPayId, purchaseCourseBundle, verifyUserPayment } from "../../Redux/Slices/RazorPaySlice";
 import { getUserData } from "../../Redux/Slices/AuthSlice";
+import Displaylectures from "../Dashboard/Displaylectures";
+
 
 function Checkout() {
     // const user = useSelector((state) => state.auth.data);
@@ -58,23 +60,35 @@ function Checkout() {
             
             
             handler: async function (response) {
-                paymentDetails.razorpay_payment_id = response.razorpay_payment_id;
-                paymentDetails.razorpay_signature = response.razorpay_signature;
-                // paymentDetails.razorpay_subscription_id = response.razorpay_subscription_id;
-                paymentDetails.razorpay_order_id = response.razorpay_order_id;
+                 console.log("Payment response:", response);
+                 // Create payment details object with correct mapping
+                    const paymentDetails = {
+                        razorpay_payment_id: response.razorpay_payment_id,
+                        razorpay_order_id: response.razorpay_order_id || order_id, // Use order_id from state if not in response
+                        razorpay_signature: response.razorpay_signature
+                    };
 
+                    console.log("Payment details being sent:", paymentDetails);
+                
 
-                console.log("Payment response:", response);
-
-                    const res = await dispatch(verifyUserPayment(paymentDetails));
-                    console.log("Verification response:", res);
-                    
-                    if (res?.payload?.success) {
-                        // Refresh user data to get updated subscription status
-                        await dispatch(getUserData());
-                        toast.success("Payment successful! You now have access to all courses.");
-                        navigate("/checkout/success");
-                    } else {
+                    try {
+                        const res = await dispatch(verifyUserPayment(paymentDetails));
+                        console.log("Verification response:", res);
+                        
+                        // Check for successful verification more thoroughly
+                        if (res?.payload?.success === true || res?.meta?.requestStatus === 'fulfilled') {
+                            // Refresh user data to get updated subscription status
+                            await dispatch(getUserData());
+                            toast.success("Payment successful! You now have access to all courses.");
+                            navigate("/checkout/success");
+                        } else {
+                            console.error("Verification failed:", res);
+                            toast.error("Payment verification failed. Please contact support.");
+                            navigate("/checkout/fail");
+                        }
+                    } catch (verificationError) {
+                        console.error("Verification error:", verificationError);
+                        toast.error("Payment verification failed. Please contact support.");
                         navigate("/checkout/fail");
                     }
             
@@ -116,7 +130,10 @@ function Checkout() {
         // If user is already subscribed, redirect to courses
         if (isSubscribed) {
             toast.success("You already have an active subscription!");
-            navigate("/courses");
+           if (role === 'admin') {
+            navigate("/course/displaylectures"); // or whatever your display lectures route is
+        }
+            else navigate("/courses");
             return;
         }
 
@@ -129,7 +146,7 @@ function Checkout() {
     // If already subscribed, show message
     if (isSubscribed) {
         return (
-            <HomeLayout>
+         
                 <div className="min-h-[90vh] flex items-center justify-center text-white">
                     <div className="text-center space-y-4">
                         <div className="text-3xl font-bold text-green-500">
@@ -139,14 +156,20 @@ function Checkout() {
                             You already have access to all courses
                         </div>
                         <button 
-                            onClick={() => navigate("/courses")}
+                           onClick={() => {
+                        if (role === 'admin') {
+                            navigate("/course/displaylectures"); // or your display lectures route
+                        } else {
+                            navigate("/courses");
+                        }
+                    }}
                             className="bg-yellow-500 hover:bg-yellow-600 transition-all ease-in-out duration-300 px-6 py-3 rounded-lg text-xl font-bold text-black"
                         >
                             Browse Courses
                         </button>
                     </div>
                 </div>
-            </HomeLayout>
+            
         );
     }
 

@@ -7,7 +7,7 @@ function RequireSubscription() {
     // Check if user is subscribed
     const isSubscribed = data?.subscription?.status === 'ACTIVE' || 
                         data?.subscription?.status === 'active' ||
-                        role === 'ADMIN';
+                        role === 'admin';
 
     // If not logged in, redirect to login
     if (!isLoggedIn) {
@@ -18,6 +18,10 @@ function RequireSubscription() {
     if (!isSubscribed) {
         return <Navigate to="/checkout" />;
     }
+
+    // if(isSubscribed){
+    //     return <Navigate to="/displaylecture"/>
+    // }
 
     // If subscribed, render the protected component
     return <Outlet />;

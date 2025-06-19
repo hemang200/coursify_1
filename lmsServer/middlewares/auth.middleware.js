@@ -4,7 +4,7 @@ import User from "../models/user.model.js";
 
 const isLoggedIn = async (req, res, next) => {
     const { token } = req.cookies;
-    console.log("Token in cookies:", token);
+    // console.log("Token in cookies:", token);
     if (!token) {
         return next(new AppError("Unauthenticated, please login again", 401));
     }
@@ -49,7 +49,7 @@ const authorizeSubscriber = async (req, res, next) => {
         const subscription = user.subscription;
         
         // Allow admin to access everything
-        if (currentUserRole === 'ADMIN') {
+        if (currentUserRole === 'admin') {
             return next();
         }
         

@@ -93,6 +93,18 @@ export const updateProfile = createAsyncThunk("/user/update/profile", async (dat
     }
 })
 
+export const changePassword = createAsyncThunk(
+  "auth/changePassword",
+  async (data, { rejectWithValue }) => {
+    try {
+      const res = await axiosInstance.post("/user/change-password", data);
+      return res.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
 // Action to update subscription status after successful payment
 export const updateSubscriptionStatus = createAsyncThunk("/auth/updateSubscription", async (subscriptionData) => {
     try {

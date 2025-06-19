@@ -22,6 +22,9 @@ import CheckoutSuccess from "./Pages/Payment/CheckoutSuccess.jsx";
 import CheckoutFailure from "./Pages/Payment/CheckoutFailure.jsx";
 import Displaylectures from "./Pages/Dashboard/Displaylectures.jsx";
 import RequireSubscription from "./Components/Auth/RequireSubscription";
+import AddLecture from "./Pages/Dashboard/Addlecture.jsx";
+import AdminDashboard from "./Pages/Dashboard/AdminDashboard.jsx";
+import ChangePassword from "./Pages/User/ChangePassword.jsx";
 function App() {
   return (
     <>
@@ -42,14 +45,16 @@ function App() {
         <Route element={<RequireAuth allowedRoles={["admin"]} />}>
           <Route path="/course/create" element={<CreateCourse />} />
           {/* Uncomment when you have these components */}
-          {/* <Route path="/course/addlecture" element={<AddLecture />} />
-          <Route path="/admin/dashboard" element={<AdminDashboard />} /> */}
+          <Route path="/course/addlecture" element={<AddLecture />} />
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
         </Route>
 
              {/* Routes that require login */}
          <Route element={<RequireAuth allowedRoles={["admin", "user"]} />}>
           <Route path='/user/profile' element={<Profile />} />
           <Route path='/user/editprofile' element={<EditProfile />} />
+          <Route path='/changepassword' element={<ChangePassword />} />
+
           <Route path='/checkout' element={<Checkout />} />
            <Route path='/checkout/success' element={<CheckoutSuccess />} />
            <Route path='/checkout/fail' element={<CheckoutFailure />} />

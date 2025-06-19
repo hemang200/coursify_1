@@ -36,28 +36,53 @@ export const purchaseCourseBundle = createAsyncThunk("/purchaseCourse", async ()
     }
 });
 
-export const verifyUserPayment = createAsyncThunk("/payments/verify", async (data) => {
+// export const verifyUserPayment = createAsyncThunk("/payments/verify", async (data) => {
+//     try {
+//         const response = await axiosInstance.post("/payments/verify", {
+//             razorpay_payment_id: data.razorpay_payment_id,
+//             razorpay_order_id: data.razorpay_order_id,
+//             // razorpay_subscription_id: data.razorpay_subscription_id,
+//             razorpay_signature: data.razorpay_signature
+//         });
+
+//         // If payment is successful, update user data to reflect subscription
+//         if (response.data.success) {
+//             // Import getUserData from AuthSlice to refresh user data
+//             const { getUserData } = await import('./AuthSlice');
+//             dispatch(getUserData());
+//         }
+//         toast.success(response.data.message);
+//         console.log("Payment verification response:", response.data);
+
+//         return response.data;
+//     } catch(error) {
+//         toast.error(error?.response?.data?.message);
+//         throw error;
+//     }
+// });
+
+export const verifyUserPayment = createAsyncThunk("/payments/verify", async (data, { dispatch, rejectWithValue }) => {
     try {
+        console.log("Verifying payment with data:", data);
+        
         const response = await axiosInstance.post("/payments/verify", {
             razorpay_payment_id: data.razorpay_payment_id,
             razorpay_order_id: data.razorpay_order_id,
-            // razorpay_subscription_id: data.razorpay_subscription_id,
             razorpay_signature: data.razorpay_signature
         });
 
-        // If payment is successful, update user data to reflect subscription
-        if (response.data.success) {
-            // Import getUserData from AuthSlice to refresh user data
-            const { getUserData } = await import('./AuthSlice');
-            dispatch(getUserData());
-        }
-        toast.success(response.data.message);
-        console.log("Payment verification response:", response.data);
+        console.log("Verification response from backend:", response.data);
 
+        // Don't show toast here, let the component handle it
         return response.data;
     } catch(error) {
-        toast.error(error?.response?.data?.message);
-        throw error;
+        console.error("Payment verification error:", error);
+        const errorMessage = error?.response?.data?.message || "Payment verification failed";
+        toast.error(errorMessage);
+        return rejectWithValue({
+            success: false,
+            message: errorMessage
+        });
     }
 });
 
@@ -118,15 +143,12 @@ const razorpaySlice = createSlice({
 
         })
         .addCase(verifyUserPayment.fulfilled, (state, action) => {
-            console.log(action);
-            toast.success(action?.payload?.message);
+            console.log("Payment verification fulfilled:", action.payload);
             state.isPaymentVerified = action?.payload?.success;
-
         })
         .addCase(verifyUserPayment.rejected, (state, action) => {
-            console.log(action);
-            toast.success(action?.payload?.message);
-            state.isPaymentVerified = action?.payload?.success;
+            console.log("Payment verification rejected:", action.payload);
+            state.isPaymentVerified = false;
         })
         .addCase(getPaymentRecord.fulfilled, (state, action) => {
             state.allPayments = action?.payload?.allPayments;

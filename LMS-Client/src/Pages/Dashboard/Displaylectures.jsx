@@ -114,13 +114,6 @@
 
 
 
-
-
-
-
-
-
-
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -141,10 +134,14 @@ function Displaylectures() {
     // Check if user is subscribed
     const isSubscribed = userData?.subscription?.status === 'ACTIVE' || 
                         userData?.subscription?.status === 'active' ||
-                        userData?.role === 'ADMIN';
+                        userData?.role === 'admin';
 
     async function onLectureDelete(courseId, lectureId) {
+        console.log("course id");
+        
         console.log(courseId, lectureId);
+        console.log(lectures[currentVideo]?.lecture?.secure_url);
+
         await dispatch(deleteCourseLecture({ courseId: courseId, lectureId: lectureId }));
         await dispatch(getCourseLectures(courseId));
     }
@@ -170,6 +167,15 @@ function Displaylectures() {
 
         fetchLectures();
     }, [state, isSubscribed, dispatch, navigate]);
+
+
+    useEffect(() => {
+    if (lectures && lectures.length > 0) {
+        console.log("Fetched lectures:", lectures);
+        console.log("Current video URL:", lectures[currentVideo]?.lecture?.secure_url);
+    }
+}, [lectures, currentVideo]);
+
 
     // If user is not subscribed, show subscription required message
     if (!isSubscribed) {
@@ -220,14 +226,23 @@ function Displaylectures() {
                         {/* left section for playing videos and displaying course details */}
                         <div className="space-y-5 w-[28rem] p-2 rounded-lg shadow-[0_0_10px_black]">
                             <video
-                                src={lectures && lectures[currentVideo]?.lecture?.secure_url}
+                                src={lectures &&  (
+      lectures[currentVideo]?.lecture?.secure_url ||
+      lectures[currentVideo]?.secure_url || ""
+    )}
+                              
+                              
+
                                 className="object-fill rounded-tl-lg rounded-tr-lg w-full"
                                 controls
                                 disablePictureInPicture
                                 muted
                                 controlsList="nodownload"
+                                autoPlay
                             >
+                                  Your browser does not support the video tag.
                             </video>
+                             
                             <div>
                                 <h1>
                                     <span className="text-yellow-500"> Title: {" "}
@@ -247,7 +262,7 @@ function Displaylectures() {
                         <ul className="w-[28rem] p-2 rounded-lg shadow-[0_0_10px_black] space-y-4">
                             <li className="font-semibold text-xl text-yellow-500 flex items-center justify-between">
                                 <p>Lectures list</p>
-                                {role === "ADMIN" && (
+                                {role === "admin" && (
                                     <button 
                                         onClick={() => navigate("/course/addlecture", { state: { ...state } })} 
                                         className="btn-primary px-2 py-1 rounded-md font-semibold text-sm"
@@ -269,7 +284,7 @@ function Displaylectures() {
                                                 </span>
                                                 {lecture?.title}
                                             </p>
-                                            {role === "ADMIN" && (
+                                            {role === "admin" && (
                                                 <button 
                                                     onClick={() => onLectureDelete(state?._id, lecture?._id)} 
                                                     className="btn-accent px-2 py-1 rounded-md font-semibold text-sm bg-red-500 hover:bg-red-600 text-white"
@@ -286,7 +301,7 @@ function Displaylectures() {
                 ) : (
                     <div className="text-center space-y-4">
                         <p className="text-lg text-gray-300">No lectures available for this course yet.</p>
-                        {role === "ADMIN" && (
+                        {role === "admin" && (
                             <button 
                                 onClick={() => navigate("/course/addlecture", { state: { ...state } })} 
                                 className="btn-primary px-4 py-2 rounded-md font-semibold text-sm bg-yellow-500 hover:bg-yellow-600"
