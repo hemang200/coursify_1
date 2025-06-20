@@ -21,11 +21,11 @@ const getAllCourses = async function (req, res, next) {
 const getLecturesByCourseId = async function (req, res, next) {
     try {
          const { id } = req.params;
-         console.log(`Fetching lectures for course ID: ${id}`);
+        //  console.log(`Fetching lectures for course ID: ${id}`);
          
         const course = await Course.findById(id);
 
-        console.log(`Course found: ${course ? course.title : 'not found'}`);
+        // console.log(`Course found: ${course ? course.title : 'not found'}`);
 
         if (!course) {
             return next(new AppError("Course not found", 404));
@@ -186,7 +186,7 @@ const removeCourse = async (req, res, next) => {
 const addLectureToCourseById = async (req, res, next) => {
         const { id } = req.params;
         const { title, description } = req.body;
-        console.log("BODY:", req.body);
+        // console.log("BODY:", req.body);
 
         if (!title || !description) {
             return next(new AppError("Title and description are required", 400));
@@ -267,7 +267,7 @@ const deleteLectureFromCourse = async (req, res, next) => {
                 await cloudinary.v2.uploader.destroy(lecture.lecture.public_id, { resource_type: "video" });
             } catch (err) {
                 // Log error but continue
-                console.error("Cloudinary delete error:", err);
+                // console.error("Cloudinary delete error:", err);
             }
         }
 

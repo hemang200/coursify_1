@@ -27,7 +27,7 @@ export const getRazorPayId = createAsyncThunk("/razorpay/getId", async () => {
 export const purchaseCourseBundle = createAsyncThunk("/purchaseCourse", async () => {
     try {
         const response = await axiosInstance.post("/payments/subscribe");
-       console.log("Order ID from backend:", response.data?.order?.id);
+    //    console.log("Order ID from backend:", response.data?.order?.id);
 
         return response.data;
     } catch(error) {
@@ -63,7 +63,7 @@ export const purchaseCourseBundle = createAsyncThunk("/purchaseCourse", async ()
 
 export const verifyUserPayment = createAsyncThunk("/payments/verify", async (data, { dispatch, rejectWithValue }) => {
     try {
-        console.log("Verifying payment with data:", data);
+        // console.log("Verifying payment with data:", data);
         
         const response = await axiosInstance.post("/payments/verify", {
             razorpay_payment_id: data.razorpay_payment_id,
@@ -71,12 +71,12 @@ export const verifyUserPayment = createAsyncThunk("/payments/verify", async (dat
             razorpay_signature: data.razorpay_signature
         });
 
-        console.log("Verification response from backend:", response.data);
+        // console.log("Verification response from backend:", response.data);
 
         // Don't show toast here, let the component handle it
         return response.data;
     } catch(error) {
-        console.error("Payment verification error:", error);
+        // console.error("Payment verification error:", error);
         const errorMessage = error?.response?.data?.message || "Payment verification failed";
         toast.error(errorMessage);
         return rejectWithValue({
@@ -143,11 +143,11 @@ const razorpaySlice = createSlice({
 
         })
         .addCase(verifyUserPayment.fulfilled, (state, action) => {
-            console.log("Payment verification fulfilled:", action.payload);
+            // console.log("Payment verification fulfilled:", action.payload);
             state.isPaymentVerified = action?.payload?.success;
         })
         .addCase(verifyUserPayment.rejected, (state, action) => {
-            console.log("Payment verification rejected:", action.payload);
+            // console.log("Payment verification rejected:", action.payload);
             state.isPaymentVerified = false;
         })
         .addCase(getPaymentRecord.fulfilled, (state, action) => {

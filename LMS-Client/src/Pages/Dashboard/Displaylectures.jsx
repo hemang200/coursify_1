@@ -137,17 +137,17 @@ function Displaylectures() {
                         userData?.role === 'admin';
 
     async function onLectureDelete(courseId, lectureId) {
-        console.log("course id");
+        // console.log("course id");
         
-        console.log(courseId, lectureId);
-        console.log(lectures[currentVideo]?.lecture?.secure_url);
+        // console.log(courseId, lectureId);
+        // console.log(lectures[currentVideo]?.lecture?.secure_url);
 
         await dispatch(deleteCourseLecture({ courseId: courseId, lectureId: lectureId }));
         await dispatch(getCourseLectures(courseId));
     }
 
     useEffect(() => {
-        console.log(state);
+        // console.log(state);
         if (!state) {
             navigate("/courses");
             return;
@@ -171,8 +171,8 @@ function Displaylectures() {
 
     useEffect(() => {
     if (lectures && lectures.length > 0) {
-        console.log("Fetched lectures:", lectures);
-        console.log("Current video URL:", lectures[currentVideo]?.lecture?.secure_url);
+        // console.log("Fetched lectures:", lectures);
+        // console.log("Current video URL:", lectures[currentVideo]?.lecture?.secure_url);
     }
 }, [lectures, currentVideo]);
 

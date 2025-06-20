@@ -58,7 +58,7 @@ function AdminDashboard() {
     async function onCourseDelete(id) {
         if(window.confirm("Are you sure you want to delete the course ? ")) {
             const res = await dispatch(deleteCourse(id));
-            console.log(res);
+            // console.log(res);
             if(res?.payload?.success) {
                 await dispatch(getAllCourses());
             }

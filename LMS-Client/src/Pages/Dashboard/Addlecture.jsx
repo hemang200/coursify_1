@@ -33,7 +33,7 @@ function AddLecture() {
     function handleVideo(e) {
         const video = e.target.files[0];
         const source = window.URL.createObjectURL(video);
-        console.log(source);
+        // console.log(source);
         setUserInput({
             ...userInput,
             lecture: video,

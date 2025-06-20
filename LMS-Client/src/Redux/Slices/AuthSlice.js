@@ -22,7 +22,7 @@ export const createAccount = createAsyncThunk("/auth/signup", async (data) => {
             },
             error: "Failed to create account"
         });
-        console.log(res);
+        // console.log(res);
         
         return (await res).data;
     } catch(error) {
@@ -58,7 +58,7 @@ export const logout = createAsyncThunk("/auth/logout", async () => {
             
             error: "Failed to log out"
         });
-        console.log(res);
+        // console.log(res);
         
         return (await res).data;
     } catch(error) {
@@ -112,7 +112,7 @@ export const updateSubscriptionStatus = createAsyncThunk("/auth/updateSubscripti
         const res = await axiosInstance.get("user/me");
         return res.data;
     } catch(error) {
-        console.error("Error updating subscription status:", error);
+        // console.error("Error updating subscription status:", error);
         throw error;
     }
 });
@@ -157,7 +157,7 @@ const authSlice = createSlice({
             if(!action?.payload?.user) return;
             localStorage.setItem("data", JSON.stringify(action?.payload?.user));
             state.data = action?.payload?.user;
-            console.log("Subscription status updated:", action?.payload?.user?.subscription);
+            // console.log("Subscription status updated:", action?.payload?.user?.subscription);
         })
     }
 })

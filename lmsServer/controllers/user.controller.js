@@ -42,7 +42,7 @@ const register = async (req, res, next) => {
         }
 
       
-                console.log('File details >' , JSON.stringify(req.file));
+                // console.log('File details >' , JSON.stringify(req.file));
         if(req.file) {
     
             
@@ -173,7 +173,7 @@ const forgotPassword = async (req, res, next) => {
                 message: `Password reset link sent to ${email} successfully`,
             });
         } catch (e) {
-             console.log("Nodemailer error:", e); 
+            //  console.log("Nodemailer error:", e); 
             user.forgotPasswordToken = undefined;
             user.forgotPasswordExpiry = undefined;
 

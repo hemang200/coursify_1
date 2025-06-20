@@ -60,7 +60,7 @@ function Checkout() {
             
             
             handler: async function (response) {
-                 console.log("Payment response:", response);
+                //  console.log("Payment response:", response);
                  // Create payment details object with correct mapping
                     const paymentDetails = {
                         razorpay_payment_id: response.razorpay_payment_id,
@@ -68,12 +68,12 @@ function Checkout() {
                         razorpay_signature: response.razorpay_signature
                     };
 
-                    console.log("Payment details being sent:", paymentDetails);
+                    // console.log("Payment details being sent:", paymentDetails);
                 
 
                     try {
                         const res = await dispatch(verifyUserPayment(paymentDetails));
-                        console.log("Verification response:", res);
+                        // console.log("Verification response:", res);
                         
                         // Check for successful verification more thoroughly
                         if (res?.payload?.success === true || res?.meta?.requestStatus === 'fulfilled') {
@@ -82,12 +82,12 @@ function Checkout() {
                             toast.success("Payment successful! You now have access to all courses.");
                             navigate("/checkout/success");
                         } else {
-                            console.error("Verification failed:", res);
+                            // console.error("Verification failed:", res);
                             toast.error("Payment verification failed. Please contact support.");
                             navigate("/checkout/fail");
                         }
                     } catch (verificationError) {
-                        console.error("Verification error:", verificationError);
+                        // console.error("Verification error:", verificationError);
                         toast.error("Payment verification failed. Please contact support.");
                         navigate("/checkout/fail");
                     }
@@ -103,7 +103,7 @@ function Checkout() {
             const paymentObject = new window.Razorpay(options);
             paymentObject.open();
         } catch (error) {
-            console.error("Error during payment:", error);
+            // console.error("Error during payment:", error);
             toast.error("Payment failed. Please try again.");
         }
     }
@@ -114,7 +114,7 @@ function Checkout() {
             await dispatch(getRazorPayId());
             await dispatch(purchaseCourseBundle());
         } catch (error) {
-            console.error("Failed to load payment data:", error);
+            // console.error("Failed to load payment data:", error);
             toast.error("Failed to initialize payment");
         }
     }
@@ -138,8 +138,8 @@ function Checkout() {
         }
 
         load().then(() => {
-            console.log("razorpayKey:", razorpayKey);
-            console.log("order_id:", order_id);
+            // console.log("razorpayKey:", razorpayKey);
+            // console.log("order_id:", order_id);
         });
     }, []);
 

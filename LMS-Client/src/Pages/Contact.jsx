@@ -41,7 +41,7 @@ function Contact() {
                 error: "Failed to submit the form"
             });
             const contactResponse = await response;
-            console.log(contactResponse)
+            // console.log(contactResponse)
             if(contactResponse?.data?.success) {
                 setUserInput({
                     name: "",

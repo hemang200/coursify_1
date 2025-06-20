@@ -13,12 +13,12 @@ const isLoggedIn = async (req, res, next) => {
 
     
     req.user = userDetails;
-    console.log("User details from token:", userDetails);
+    // console.log("User details from token:", userDetails);
     next();
 }
 
 const authorizedRoles = (...roles) => async (req, res, next) => {
-    console.log("Checking role:", req.user.role);
+    // console.log("Checking role:", req.user.role);
     const currentUserRole = req.user.role;
     if (!roles.includes(req.user.role)) {
         return next(new AppError(`Role: ${req.user.role} is not allowed to access this resource`, 403));
@@ -43,7 +43,7 @@ const authorizeSubscriber = async (req, res, next) => {
             return next(new AppError("User not found", 404));
         }
         
-        console.log("User subscription status:", user.subscription);
+        // console.log("User subscription status:", user.subscription);
         
         const currentUserRole = user.role;
         const subscription = user.subscription;
@@ -60,7 +60,7 @@ const authorizeSubscriber = async (req, res, next) => {
         
         next();
     } catch (error) {
-        console.error("Subscription check error:", error);
+        // console.error("Subscription check error:", error);
         return next(new AppError("Error checking subscription status", 500));
     }
 }

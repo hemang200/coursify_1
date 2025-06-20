@@ -13,7 +13,7 @@ export const contactUs = async (req, res) => {
 
         // Here you can add logic to save the message to DB or send an email
         // For now, just log it
-        console.log("Contact Form Submission:", { name, email, message });
+        // console.log("Contact Form Submission:", { name, email, message });
 
         return res.status(200).json({
             success: true,
