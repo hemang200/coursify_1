@@ -73,18 +73,7 @@ function HomeLayout() {
                         <li><Link to="/courses" onClick={closeDrawer}>All Courses</Link></li>
                         <li><Link to="/contact" onClick={closeDrawer}>Contact Us</Link></li>
                         <li><Link to="/about" onClick={closeDrawer}>About Us</Link></li>
-                         {/* {!isLoggedIn && (
-                            <li className="absolute bottom-4 w-[90%]">
-                                <div className="w-full flex items-center justify-center">
-                                    <button className='btn-primary px-4 py-1 font-semibold rounded-md w-full'>
-                                        <Link to="/login">Login</Link>
-                                    </button>
-                                    <button className='btn-secondary px-4 py-1 font-semibold rounded-md w-full'>
-                                        <Link to="/signup">Signup</Link>
-                                    </button>
-                                </div>
-                            </li>
-                        )} */}
+                         
 
 
                         {!isLoggedIn && (
