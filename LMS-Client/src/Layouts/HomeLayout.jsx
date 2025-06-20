@@ -19,19 +19,6 @@ function HomeLayout() {
     // // for displaying the options acc to role
     const role = useSelector((state) => state?.auth?.role);
 
-    // function changeWidth() {
-    //     const drawerSide = document.getElementsByClassName("drawer-side");
-    //     drawerSide[0].style.width = 'auto';
-    // }
-
-    // function hideDrawer() {
-    //     const element = document.getElementsByClassName("drawer-toggle");
-    //     element[0].checked = false;
-
-    //     const drawerSide = document.getElementsByClassName("drawer-side");
-    //     drawerSide[0].style.width = '0';
-    // }
-
     function closeDrawer() {
   const drawerCheckbox = document.getElementById("my-drawer");
   if (drawerCheckbox) {
