@@ -1,36 +1,21 @@
-import path from 'path';
 import multer from 'multer';
+import path from 'path';
+
+const storage = multer.memoryStorage(); // stores file in memory
 
 const upload = multer({
-    
-           dest : "uploads/",
-    limits: {
-        fileSize: 50 * 1024 * 1024  // 50 MB
-    },
-    storage: multer.diskStorage({
-        destination: 'uploads/'
-        ,
-        filename: (_req, file, cb) => {
-            // console.log("File >", file);
-            
-            cb(null, file.originalname);
-        },
-    }),
-    fileFilter: (_req,file,cb)=>{
-        let ext = path.extname(file.originalname);
+  storage,
+  limits: {
+    fileSize: 50 * 1024 * 1024, // 50 MB
+  },
+  fileFilter: (_req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    if (!['.png', '.jpg', '.jpeg', '.webp', '.mp4'].includes(ext)) {
+      cb(new Error(`Unsupported file type! ${ext}`), false);
+    } else {
+      cb(null, true);
+    }
+  }
+});
 
-        if(
-            ext !== '.png' && 
-            ext !== '.jpg' && 
-            ext !== '.jpeg' && 
-            ext !== '.webp' && 
-            ext !== '.mp4'
-        ) {
-            cb(new Error(`Unsupported file type! ${ext}`), false);
-             return;
-        }
-        cb(null, true);
-    },
- });
-
- export default upload;
+export default upload;
