@@ -44,6 +44,7 @@ app.use('/api/v1/user', userRoutes);
 app.use('/api/v1/courses', courseRoutes);
 app.use('/api/v1/payments', paymentRoutes);
 app.use('/api/v1', miscellaneousRoutes);
+app.get('/favicon.ico', (req, res) => res.status(204).end());
 
 app.all('*', (req, res) => {
   res.status(404).send('OOPS! This route does not exist');
