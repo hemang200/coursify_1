@@ -7,6 +7,7 @@ This is the frontend for the LMS project, built with React and Vite.
 - User authentication
 - Course subscription with Razorpay
 - Responsive UI
+- Responsive GUI
 
 ## Getting Started
 
