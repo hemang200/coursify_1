@@ -1,19 +1,11 @@
-// config/dbConnection.js
 import mongoose from 'mongoose';
 
-mongoose.set('strictQuery', false);
-
 const connectDB = async () => {
-  if (mongoose.connection.readyState === 1) {
-    console.log('MongoDB already connected');
-    return;
-  }
-
   try {
-    await mongoose.connect(process.env.MONGO_URI);
-    console.log('MongoDB connected');
+    const conn = await mongoose.connect(process.env.MONGODB_URI);
+    console.log(`MongoDB Connected: ${conn.connection.host}`);
   } catch (error) {
-    console.error('MongoDB connection failed:', error.message);
+    console.error("MongoDB connection failed:", error.message);
     process.exit(1);
   }
 };
