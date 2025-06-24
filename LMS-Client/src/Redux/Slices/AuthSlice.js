@@ -37,6 +37,7 @@ export const login = createAsyncThunk("/auth/login", async (data) => {
         });
         return (await res).data;
     } catch(error) {
+        console.log(error);
         toast.error(error?.response?.data?.message);
     }
 });
@@ -53,6 +54,7 @@ export const logout = createAsyncThunk("/auth/logout", async () => {
         });
         return (await res).data;
     } catch(error) {
+        console.log(error);
         toast.error(error?.response?.data?.message);
     }
 });
@@ -69,6 +71,7 @@ export const updateProfile = createAsyncThunk("/user/update/profile", async (dat
         });
         return (await res).data;
     } catch(error) {
+        console.log(error);
         toast.error(error?.response?.data?.message);
     }
 })
@@ -78,6 +81,7 @@ export const getUserData = createAsyncThunk("/user/details", async () => {
         const res = axiosInstance.get("user/me");
         return (await res).data;
     } catch(error) {
+        console.log(error);
         toast.error(error.message);
     }
 })

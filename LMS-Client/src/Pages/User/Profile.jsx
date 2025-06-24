@@ -11,6 +11,7 @@ function Profile() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const userData = useSelector((state) => state?.auth?.data);
+    console.log("User Data:", userData);
 
     // async function handleCancellation() {
     //     toast("Initiating cancellation");
