@@ -90,7 +90,6 @@ const login = async (req, res, next) => {
     }
 
     const token = await user.generateJWTToken();
-    user.password = undefined;
     res.cookie("token", token, cookieOptions);
     res.status(200).json({ success: true, message: "User logged in successfully", user });
   } catch (err) {
